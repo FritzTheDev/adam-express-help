@@ -16,6 +16,7 @@ app.set('host', process.env.HOST || '0.0.0.0');
 app.set('port', process.env.PORT || 8080);
 
 // TODO: routes
+const controllers = require('controllers/controllers');
 
 //morgan
 app.use(logger('common', {
@@ -34,17 +35,18 @@ app.use(bodyParser());
 //static directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// // db connection
-// mongoose.connect(process.env.DATABASE);
-// mongoose.connection.on('connected', (req, res, next) => {
-//   console.log('Connected to database ' + process.env.DATABASE);
-// });
-//
-// mongoose.connection.on('error', (err, next) => {
-//   console.log('Error connecting to database ' + err);
-//   next(err);
-// });
+// db connection
+mongoose.connect(process.env.DATABASE);
+mongoose.connection.on('connected', (req, res, next) => {
+  console.log('Connected to database ' + process.env.DATABASE);
+});
+
+mongoose.connection.on('error', (err, next) => {
+  console.log('Error connecting to database ' + err);
+  next(err);
+});
 // TODO: Set route prefixes
+app.use('/api', controllers)
 
 //index route
 app.get('/', (req, res, next) => {
